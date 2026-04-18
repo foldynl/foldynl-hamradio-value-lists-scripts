@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+source lib/generic.sh
+
+URL="https://pota.app/all_parks_ext.csv"
+DIR="${LISTS_DIR}/POTA"
+FILE="all_parks_ext.csv"
+
+download_and_compress "${URL}" "${DIR}" "${FILE}"

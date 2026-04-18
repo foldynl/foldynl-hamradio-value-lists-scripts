@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+source lib/generic.sh
+
+URL="https://www.sotadata.org.uk/summitslist.csv"
+DIR="${LISTS_DIR}/SOTA"
+FILE="summitslist.csv"
+
+download_and_compress "${URL}" "${DIR}" "${FILE}"

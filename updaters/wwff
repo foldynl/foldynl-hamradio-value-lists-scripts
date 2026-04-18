@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+source lib/generic.sh
+
+URL="https://wwff.co/wwff-data/wwff_directory.csv"
+DIR="${LISTS_DIR}/WWFF"
+FILE="wwff_directory.csv"
+
+download_and_compress "${URL}" "${DIR}" "${FILE}"

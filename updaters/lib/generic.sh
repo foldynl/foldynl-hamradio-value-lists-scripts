@@ -12,10 +12,25 @@ download_and_compress() {
     local filename="$3"
     local dest_file="${dest_dir}/${filename}"
 
-    if ! curl -A "user-agent-name QLog" -fsSL --retry 3 --retry-delay 5 -o "${dest_file}" "${url}"; then
+    local tmp_file
+    tmp_file="$(mktemp)"
+    trap 'rm -f "${tmp_file}"' RETURN
+
+    if ! curl -fsSL --retry 3 --retry-delay 5 -o "${tmp_file}" "${url}"; then
         echo "[ERROR] Download failed: ${url}" >&2
         return 1
     fi
 
-    gzip -kf "${dest_file}" # -k keep original, -f overwrite existing .gz
+    # Compare checksums – skip update if file unchanged
+    if [[ -f "${dest_file}" ]]; then
+        local old_sum new_sum
+        old_sum="$(md5sum "${dest_file}" | cut -d' ' -f1)"
+        new_sum="$(md5sum "${tmp_file}"  | cut -d' ' -f1)"
+        if [[ "${old_sum}" == "${new_sum}" ]]; then
+            return 0
+        fi
+    fi
+
+    mv "${tmp_file}" "${dest_file}"
+    gzip -kf "${dest_file}"          # -k keep original, -f overwrite existing .gz
 }
